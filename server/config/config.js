@@ -16,3 +16,10 @@ if (process.env.NODE_ENV === 'DEV') {
 }
 
 process.env.URL_DB = urlBD;
+
+
+//Fecha ExpireToken
+process.env.EXPIRE_TOKEN = 60 * 60 * 24 * 30;
+
+//SeedAuth
+process.env.SEED = process.env.SEED || 'development';
