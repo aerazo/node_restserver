@@ -6,10 +6,12 @@ let Schema = mongoose.Schema;
 let categoriaSchema = new Schema({
     descripcion: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     usuario: {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario'
     }
 });
 

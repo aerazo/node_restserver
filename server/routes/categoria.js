@@ -7,7 +7,8 @@ const app = express();
 // Mostrar todas las categorias
 app.get('/categoria', verificaToken, (req, res) => {
 
-    Categoria.find()
+    Categoria.find({})
+        .populate('usuario')
         .exec((err, categorias) => {
 
             if (err) {
@@ -28,6 +29,24 @@ app.get('/categoria', verificaToken, (req, res) => {
 
 //Mostrar categoria por ID
 app.get('/categoria/:id', (req, res) => {
+
+    let id = req.params.id;
+
+    Categoria.findById(id, (err, categoriaDB) => {
+
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        res.json({
+            ok: true,
+            categoriaDB,
+        });
+
+    });
 
 });
 
@@ -83,7 +102,9 @@ app.put('/categoria/:id', (req, res) => {
         if (!categoriaDB) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: 'id not exists'
+                }
             });
         }
 
@@ -97,9 +118,33 @@ app.put('/categoria/:id', (req, res) => {
 });
 
 //Elimina una categoria
-app.delete('/categoria/:id', (req, res) => {
+app.delete('/categoria/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
+    let id = req.params.id;
 
+    Categoria.findByIdAndRemove(id, (err, categoriaDB) => {
+
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+        if (!categoriaDB) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'id not exists'
+                }
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: 'category deleted'
+        });
+
+    });
 });
 
 
